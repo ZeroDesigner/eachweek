@@ -38,6 +38,9 @@ python eachweek.py
 2. **不要滥用**
 3. **不要滥用**
 
+#### License
+
+** GPL V3 **
 
 #### conda环境
 
