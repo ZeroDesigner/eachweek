@@ -177,7 +177,7 @@ def search_in_pmd(key_words):
 
 def get_summary(pmid):
     from Bio import Entrez
-    Entrez.email = "luskyqi@outlook.com"
+    Entrez.email = "12223334@outlook.com"
     handle = Entrez.esummary(db="pubmed",id=pmid)
     return Entrez.read(handle)[0]
 
