@@ -1,5 +1,8 @@
 # Python与PubMed
 
+#### 简介
+
+
 这期是和半月刊一起在出，我本来的想法是，使用Python构建一个可以自动整理文献的工具
 
 + 来源：PubMed
@@ -11,6 +14,28 @@
 + 可以自定义文献的时间段，例如前10天，20天等等
 
 So，这就是半月刊的原型，后期通过人力矫正，我们进行整理规划。
+
+所以，我是因为懒惰才创建的eachweek。
+
+#### 主要使用流程
+
+```
+conda env create -f  eachweek.yml
+conda activate eachweek
+python eachweek.py
+```
+#### 需要修改的参数
+
+1. 需要安装conda
+2. 需要一个entra的email的账号
+3. 需要获取邮箱的license，我是用的是qq邮箱
+4. 可以自己定义关键词
+5. 可以自己定义检索时间段，从当前开始往前推
+
+#### 需要注意的事项
+
+**不要滥用**
+
 
 #### conda环境
 
