@@ -128,7 +128,8 @@ def get_abstract(pmid):
     from Bio import Entrez
     from Bio import Medline
     import numpy as np
-    Entrez.email = "luskyqi@outlook.com"
+    # 注册好的entrez的账号
+    Entrez.email = "12223334@outlook.com"
     handle = Entrez.efetch(db="pubmed", id=pmid,rettype="medline")
     records = Medline.parse(handle)
     records = list(records)
@@ -138,7 +139,8 @@ def get_abstract(pmid):
 
 def search_in_pmd(key_words):
     from Bio import Entrez
-    Entrez.email = "luskyqi@outlook.com"
+    # 注册好的entrez的账号
+    Entrez.email = "12223334@outlook.com"
     handle = Entrez.esearch(db="pubmed", term=key_words)
     record = Entrez.read(handle)
     return record['IdList']
