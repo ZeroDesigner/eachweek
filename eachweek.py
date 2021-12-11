@@ -6,7 +6,7 @@ Author: sujiaqi
 Date: 2021-08-17 17:56:17
 LastEditTime: 2021-12-11 14:54:29
 Description: get week paper
-FilePath: /undefined/Users/sujiaqi/Desktop/周刊/eachweek.py
+FilePath: /Users/sujiaqi/Desktop/周刊/eachweek.py
 '''
 
 def geogle_translate(input_str):
@@ -19,7 +19,7 @@ def get_abstract(pmid):
     from Bio import Entrez
     from Bio import Medline
     import numpy as np
-    Entrez.email = "luskyqi@outlook.com"
+    Entrez.email = "12223334@outlook.com"
     handle = Entrez.efetch(db="pubmed", id=pmid,rettype="medline")
     records = Medline.parse(handle)
     records = list(records)
