@@ -82,4 +82,4 @@ dependencies:
     - urllib3==1.26.6
     - webrequests==1.0.4
     - zipp==3.5.0
-prefix: /home/spuser/miniconda3/envs/eachweek
+prefix: /home/user/miniconda3/envs/eachweek
