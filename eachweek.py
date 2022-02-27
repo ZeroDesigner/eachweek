@@ -1,4 +1,3 @@
-# !/home/spuser/miniconda3/envs/eachweek/bin/python
 # coding=utf-8
 
 '''
@@ -9,17 +8,20 @@ Description: get week paper
 FilePath: /Users/sujiaqi/Desktop/周刊/eachweek.py
 '''
 
+from googletrans import Translator
+
+
 def geogle_translate(input_str):
-    from googletrans import Translator
     translator = Translator()
     translations = translator.translate([input_str], dest='zh-cn',src='en')
     return translations[0].text
-    
-def get_abstract(pmid):
-    from Bio import Entrez
-    from Bio import Medline
-    import numpy as np
-    Entrez.email = "12223334@outlook.com"
+
+from Bio import Entrez
+from Bio import Medline
+import numpy as np
+
+def get_abstract(pmid,Eemail):
+    Entrez.email = Eemail
     handle = Entrez.efetch(db="pubmed", id=pmid,rettype="medline")
     records = Medline.parse(handle)
     records = list(records)
@@ -27,17 +29,15 @@ def get_abstract(pmid):
         abstract = records[index].get("AB", "?")
     return abstract
 
-def search_in_pmd(key_words):
+def search_in_pmd(key_words,Eemail):
     # 输入你的entrez账号
-    from Bio import Entrez
-    Entrez.email = "1234455@outlook.com"
+    Entrez.email = Eemail
     handle = Entrez.esearch(db="pubmed", term=key_words)
     record = Entrez.read(handle)
     return record['IdList']
 
-def get_summary(pmid):
-    from Bio import Entrez
-    Entrez.email = "1234455@outlook.com"
+def get_summary(pmid,Eemail):
+    Entrez.email = Eemail
     handle = Entrez.esummary(db="pubmed",id=pmid)
     return Entrez.read(handle)[0]
 
@@ -85,18 +85,7 @@ def judge_time(t):
         return 1
     else:
         return 0
-#def judge_paper(journal):
-#    import pickle
-#    f=open ("id.txt", 'rb')
-#    if_dict=pickle.load(f)
-#    print(journal,if_dict[journal])
-#    try:
-#        if if_dict[journal] != 'Not Available' and if_dict[journal] > 3 :
-#            return 1
-#        else:
-#            return 0
-#    except:
-#        return 0
+
 def judge_paper(journal):
     import os
     cmd_str = 'impact_factor search \"tmp\"'
@@ -120,8 +109,8 @@ def star_paper(factor):
     elif factor < 3:
         return 0
 
-def md_special(key_words):
-    pmid_list = search_in_pmd(key_words)
+def md_special(key_words,Eemail):
+    pmid_list = search_in_pmd(key_words,Eemail)
     pmid_dict = []
     header = '<header-box>str0</header-box>\n'
     md_text = '# tmp\n\n'
@@ -129,7 +118,7 @@ def md_special(key_words):
     count = 0
     for i in pmid_list:
         #print(i)
-        summary = get_summary(i)
+        summary = get_summary(i,Eemail)
         if judge_time(summary['History']['pubmed'][0]) == 1 and judge_paper(summary['Source']) > 3  :
             #abstract = get_abstract(i)
             basic_info = {}
@@ -139,7 +128,7 @@ def md_special(key_words):
             basic_info['Title'] =summary['Title']
             basic_info['Source']=summary['Source']
             basic_info['LastAuthor']=summary['LastAuthor']
-            abstract = get_abstract(i).replace( "'", "\'" )
+            abstract = get_abstract(i,Eemail).replace( "'", "\'" )
             basic_info['abstract_zh']=geogle_translate(abstract)
             basic_info['abstract_en']=abstract
             basic_info['star']= star_paper(float(basic_info['If']))
@@ -175,20 +164,25 @@ def auto_report(receiver,sender,mail_license,smtpserver,mail_body,mail_title):
 if __name__ == '__main__':
     import  datetime
     nt = datetime.datetime.today()
-    #for i in  range(len(10)):
+    import json
+    
+    with open("./keywords.json",'r') as keyw:
+        All_words = json.load(keyw)
+    # entrez账号
+    Eemail=All_words['entrez']
     # 在这里输入你的检索的关键词
-    kword_list = ['Peptide','Virus','CADD','DOCK','Molecular Dynamics','SARS-COV-2','COVID-19''Drug','AI']
+    kword_list = All_words['kword_list'].split(",")
     this_week = ''
     for w in kword_list:
-        this_week = this_week + md_special(w)
+        this_week = this_week + md_special(w,Eemail)
     # you need to get these informations below
     # 接受邮箱
-    receiver = 'pubmed@outlook.com'
+    receiver = All_words['receiver_Email']
     # 发送邮箱
-    sender = '12345678@qq.com'
+    sender = All_words['sender_Email']
     # 邮箱的license
-    mail_license = '1a2b3c4d5e6f7g8h9j0k'
-    smtpserver = 'smtp.qq.com'
+    mail_license = All_words['mail_license']
+    smtpserver = All_words['smtpserver']
     mail_body = this_week
     mail_title = '半月刊 '+str(nt.year)+'-'+str(nt.month)+'_'+str(nt.day)
     auto_report(receiver,sender,mail_license,smtpserver,mail_body,mail_title)
